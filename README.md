@@ -75,3 +75,55 @@ El proyecto está estructurado bajo el patrón **Modelo-Vista-Controlador**, lo 
 
 
     - consultar que es Questpdf  ---> 
+
+
+## Dockerfile
+    Primera etapa (build): usa el SDK completo (mcr.microsoft.com/dotnet/sdk:9.0) para compilar el proyecto.
+  - **Primero es necesario crear un Archivo con nombre : dockerfile**  
+
+  - STAGE 1 : Build  * Construccion de la Imagen*
+
+      FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+      WORKDIR / src
+
+    
+  - Copiar el acrhivo .csproj y restaurar dependencias 
+
+    COPY *.csproj ./
+    RUN dotnet restore
+
+  
+  - copiar todo el codigo y compilar 
+
+    Copy . ./
+
+  
+  ** ** 
+  usa solo el runtime (mcr.microsoft.com/dotnet/aspnet:9.0) para ejecutar la app (más liviano).
+  - **Stage 2 : Runtime**
+
+  From mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+  WORKDIR /app
+  COPY --from=build /app/publish .
+
+  - Exponer el puertoen el contenedor 
+
+  EXPOSE 8080
+
+  - **COMANDO DE INICIO**
+
+    ENTRYPOINT ["dotnet", nombre_procyecto.dll] // buscar en la ruta -> el nombre = bin/Release/net9.0/publish/
+
+
+
+    ***para levantar el .dll --> dotnet publish -c Release -o ./publish ***
+
+
+    **Para hacer la consturccion de la imagen**
+      docker build -t medicos_c .
+
+    **Para correr el proyecto si funciona XD**
+
+    docker rund -d -p 8080:8080 --name medicos_app medicos_c
+
+
