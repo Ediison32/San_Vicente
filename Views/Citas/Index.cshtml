@@ -1,0 +1,164 @@
+@model IEnumerable<medicos_c.Models.Citas>
+<div class="container mt-5">
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Lista de Citas</h2>
+    
+        <form asp-action="ListarPaciente" method="post">
+           
+    
+            <div class="input-group mb-3">
+                <select name="PacienteId" id="PacienteId" class="form-select" required>
+                    <option selected disabled>Listar por paciente</option>
+                    @if (ViewBag.Pacientes != null)
+                    {
+                        foreach (var d in ViewBag.Pacientes)
+                        {
+                            <option value="@d.Id">@d.Nombre @d.Apellido</option>
+                        }
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Listar</button>
+            </div>
+        </form>
+        
+        <form asp-action="ListarMedicos" method="post">
+           
+    
+            <div class="input-group mb-3">
+                <select name="MedicoId" id="MedicoId" class="form-select" required>
+                    <option selected disabled>Listar por Medico</option>
+                    @if (ViewBag.Pacientes != null)
+                    {
+                        foreach (var d in ViewBag.Medicos)
+                        {
+                            <option value="@d.Id">@d.Nombre @d.Apellido</option>
+                        }
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Listar</button>
+            </div>
+        </form>
+        
+        
+
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal">Añadir</button>
+    </div>
+
+    <!-- Tabla de citas -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Médico</th>
+            <th>Paciente</th>
+            <th>Fecha de la Cita</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+       
+        <tbody>
+        @foreach (var p in Model)
+        {
+            string colorFila = p.Estado switch
+            {
+                "Cancelada" => "table-danger",
+                "Atendida" => "table-success",
+                 _ => ""
+            };
+
+            <tr class="@colorFila">
+                <td>@p.Id</td>
+                <td>@p.Medicos.Nombre</td>
+                <td>@p.Pacientes.Nombre</td>
+                <td>@p.FechaCita</td>
+                <td>
+                    @if (p.Estado == "Cancelada" || p.Estado == "Atendida")
+                    {
+                        <span class="badge bg-secondary">@p.Estado</span>
+                    }
+                    else
+                    {
+                        <form method="post" asp-action="CambioEstado" asp-controller="Citas" style="display:inline;">
+                            <input type="hidden" name="id" value="@p.Id" />
+                            <input type="hidden" name="estado" value="Cancelada" />
+                            <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+                        </form>
+                        <form method="post" asp-action="CambioEstado" asp-controller="Citas" style="display:inline;">
+                            <input type="hidden" name="id" value="@p.Id" />
+                            <input type="hidden" name="estado" value="Atendida" />
+                            <button type="submit" class="btn btn-success btn-sm">Atendida</button>
+                        </form>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-warning" asp-action="Detalles" asp-controller="Citas" asp-route-id="@p.Id">Editar</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+
+    </table>
+</div>
+
+
+<!-- Modal Agregar Cita -->
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalCitaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCitaLabel">Agregar Cita</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form asp-action="Add" method="post"> 
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Médico</label>
+                        <select name="MedicoId" class="form-select" required>
+                            <option selected disabled>Seleccione un médico</option>
+                            @if (ViewBag.Medicos != null)
+                            {
+                                
+                                foreach (var d in ViewBag.Medicos)
+                                {
+                                    <option value="@d.Id">@d.Nombre @d.Apellido</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Paciente</label>
+                        <select name="PacienteId" class="form-select" required>
+                            <option selected disabled>Seleccione un paciente</option>
+                            @if (ViewBag.Pacientes != null)
+                            {
+                                
+                                foreach (var d in ViewBag.Pacientes)
+                                {
+                                    <option value="@d.Id">@d.Nombre @d.Apellido</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Fecha y Hora</label>
+                        <input type="datetime-local" name="FechaCita" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}

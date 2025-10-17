@@ -1,0 +1,49 @@
+@model medicos_c.Models.Citas
+
+<form asp-action="Update" method="post" class="needs-validation" novalidate>
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label class="form-label">Id : <span class="fw-bold" style="font-weight: bold; color: #333;">@Model.Id</span></label>
+        
+    </div>
+    <div class="mb-3">
+        <label asp-for="MedicoId" class="form-label">Médico</label>
+        <select asp-for="MedicoId" class="form-select">
+            <option value="">Seleccione un médico</option>
+            @if (ViewBag.Medicos != null)
+            {
+                foreach (var d in ViewBag.Medicos)
+                {
+                    <option value="@d.Id" selected="@(d.Id== Model.MedicoId)">@d.Nombre @d.Apellido</option>
+                }
+            }
+        </select>
+        <span asp-validation-for="MedicoId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PacienteId" class="form-label">Paciente</label>
+        <select asp-for="PacienteId" class="form-select" >
+            <option value="">Seleccione un paciente</option>
+            @if (ViewBag.Pacientes != null)
+            {
+                foreach (var d in ViewBag.Pacientes)
+                {
+                    <option value="@d.Id" selected="@(d.Id== Model.PacienteId)">@d.Nombre @d.Apellido</option>
+                }
+            }
+        </select>
+        <span asp-validation-for="PacienteId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="FechaCita" class="form-label">Fecha y Hora</label>
+        <input asp-for="FechaCita" class="form-control" type="datetime-local" />
+        <span asp-validation-for="FechaCita" class="text-danger"></span>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" asp-controller="Citas" class="btn btn-warning">Regresar</a>
+    </div>
+</form>

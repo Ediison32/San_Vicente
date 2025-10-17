@@ -1,0 +1,110 @@
+@model IEnumerable<medicos_c.Models.Pacientes>
+
+<div class="container mt-5">
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Lista de Pacientes</h2>
+        
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal">Añadir</button>
+    </div>
+
+    <!-- Tabla de pacientes -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Edad</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Documento</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var p in Model)
+        {
+            
+        <tr>
+            <td>@p.Id</td>
+            <td>@p.Edad</td>
+            <td>@p.Nombre</td>
+            <td>@p.Apellido</td>
+            <td>@p.Documento</td>
+            <td>@p.Telefono</td>
+            <td>@p.Email</td>
+            <td>
+                <a  class="btn btn-warning"    asp-action="Detalles" asp-controller="Pacientes" asp-route-id="@p.Id">Edit</a>
+                <a class="btn btn-danger" onclick="return confirm('seguro que quieres Eliminar ?')" asp-action="Delete" asp-controller="Pacientes" asp-route-id="@p.Id">Eliminar</a>
+            </td>
+        </tr>
+            
+        }
+        <!-- Más filas se cargarán desde el backend -->
+        </tbody>
+    </table>
+</div>
+
+
+@* modal  *@
+
+<!-- Modal Agregar Paciente -->
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalPacienteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPacienteLabel">Agregar Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form asp-action="Add" method="post"> 
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Nombre</label>
+                        <input type="text" name="Nombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Apellido</label>
+                        <input type="text" name="Apellido" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Edad</label>
+                        <input type="number" name="Edad" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Documento</label>
+                        <input type="text" name="Documento" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Teléfono</label>
+                        <input type="text" name="Telefono" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" name="Email" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* para mostar si sale con exito o no la creada  *@
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}

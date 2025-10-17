@@ -1,0 +1,40 @@
+
+@model IEnumerable<medicos_c.Models.Citas>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var cita in Model)
+    {
+        <tr>
+            <td>@cita.Id</td>
+            <td>
+                @if (ViewBag.tipo == "Médico")
+                {
+                    // Mostramos el médico, porque la lista es para un paciente
+                    @cita.Medicos?.Nombre
+                }
+                else if (ViewBag.tipo == "Paciente")
+                {
+                    // Mostramos el paciente, porque la lista es para un médico
+                    @cita.Pacientes?.Nombre
+                }
+            </td>
+            <td>@ViewBag.tipo</td>
+            <td>@cita.FechaCita.ToShortDateString()</td>
+            <td>@cita.Estado</td>
+        </tr>
+    }
+
+    </tbody>
+</table>
+
+<a asp-action="Index" asp-controller="Citas" class="btn btn-warning">Regresar</a>
