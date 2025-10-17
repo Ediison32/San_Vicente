@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// var connectionString = Environment.GetEnvironmentVariable("ConnectionDb");
+
 // configuracion para la db  tiene que ir despues de --->>>>>>>>>>>>>>>>>>>>>>>>> builder.Services.AddControllersWithViews();  ojoooooooooo
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
