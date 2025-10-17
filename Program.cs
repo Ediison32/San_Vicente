@@ -10,10 +10,19 @@ builder.Services.AddControllersWithViews();
 // var connectionString = Environment.GetEnvironmentVariable("ConnectionDb");
 
 // configuracion para la db  tiene que ir despues de --->>>>>>>>>>>>>>>>>>>>>>>>> builder.Services.AddControllersWithViews();  ojoooooooooo
+
+// builder.Services.AddDbContext<AppDbContext>(options =>
+//     options.UseMySql(
+//         builder.Configuration.GetConnectionString("ConectionDb"),
+//         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("ConectionDb"))
+//     )
+// );
+
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("ConectionDb"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("ConectionDb"))
+        new MySqlServerVersion(new Version(8, 0, 36)) // Puedes ajustar si tu versión es distinta
     )
 );
 
